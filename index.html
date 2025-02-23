@@ -43,6 +43,65 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            background: #e94560;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.1s;
+            touch-action: manipulation;
+            /* Prevents zooming on touch */
+        }
+
+        .control-btn:hover,
+        .control-btn:active {
+            transform: scale(1.1);
+            background: #ff5771;
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .instructions {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 20px 0;
+            font-size: 1em;
+        }
+
+        .keys {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #e94560;
+            font-weight: bold;
+        }
+
         .restart-btn {
             margin-top: 20px;
             padding: 10px 20px;
@@ -86,6 +145,21 @@
                 width: 100%;
             }
 
+            .instructions {
+                font-size: 0.9em;
+            }
+
+            .keys {
+                display: none;
+                /* Hide keyboard instructions on mobile */
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+
             footer {
                 font-size: 0.8em;
             }
@@ -99,6 +173,25 @@
             Score: <span id="score">0</span> | High Score: <span id="highScore">0</span>
         </div>
         <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div class="controls">
+            <div class="control-row">
+                <button class="control-btn" id="upBtn">↑</button>
+            </div>
+            <div class="control-row">
+                <button class="control-btn" id="leftBtn">←</button>
+                <button class="control-btn" id="downBtn">↓</button>
+                <button class="control-btn" id="rightBtn">→</button>
+            </div>
+        </div>
+        <div class="instructions">
+            Use the arrow keys to play:
+            <div class="keys">
+                <span class="key">↑</span>
+                <span class="key">↓</span>
+                <span class="key">←</span>
+                <span class="key">→</span>
+            </div>
+        </div>
         <button class="restart-btn" onclick="restartGame()">Restart Game</button>
     </div>
 
@@ -127,6 +220,12 @@
         let gameLoop;
 
         highScoreElement.textContent = highScore;
+
+        // Control buttons
+        const upBtn = document.getElementById('upBtn');
+        const downBtn = document.getElementById('downBtn');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
 
         function drawGame() {
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
@@ -215,8 +314,19 @@
             drawGame();
         }
 
+        // Keyboard controls
         document.addEventListener('keydown', (e) => {
-            switch (e.key) {
+            moveSnake(e.key);
+        });
+
+        // Touch controls
+        upBtn.addEventListener('click', () => moveSnake('ArrowUp'));
+        downBtn.addEventListener('click', () => moveSnake('ArrowDown'));
+        leftBtn.addEventListener('click', () => moveSnake('ArrowLeft'));
+        rightBtn.addEventListener('click', () => moveSnake('ArrowRight'));
+
+        function moveSnake(direction) {
+            switch (direction) {
                 case 'ArrowUp':
                     if (dy === 0) { dx = 0; dy = -1; }
                     break;
@@ -230,7 +340,7 @@
                     if (dx === 0) { dx = 1; dy = 0; }
                     break;
             }
-        });
+        }
 
         drawGame();
     </script>
